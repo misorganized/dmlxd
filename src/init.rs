@@ -83,6 +83,16 @@ fn load_db(db_path: &String) -> Result<Connection, Box<dyn Error>> {
         );
     ", ())?;
 
+    conn.execute("
+        CREATE TABLE IF NOT EXISTS contacts (
+            login TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            public_key TEXT NOT NULL UNIQUE,
+            ip_address TEXT NOT NULL,
+            port INTEGER NOT NULL
+        );
+    ", ())?;
+
     Ok(conn)
 }
 
@@ -102,7 +112,7 @@ fn load_config() -> Result<Config, Box<dyn Error>> {
 
     let output_config = config.clone();
 
-    config.first_run = true;
+    config.first_run = false;
     let yaml = serde_yaml::to_string(&config)?;
     std::fs::write(&config_path, yaml)?;
 
