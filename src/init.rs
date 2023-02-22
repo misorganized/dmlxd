@@ -80,7 +80,6 @@ pub fn first_login(conn: &Connection) {
         port: 1096,
     };
 
-
     conn.execute(
         "INSERT INTO users (login, name, public_key, ip_address, port) VALUES (?1, ?2, ?3, ?4, ?5)",
         params![&user.login, &user.name, &user.public_key, &user.ip_address, &user.port],
