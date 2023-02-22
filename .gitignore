@@ -1,1 +1,4 @@
 /target
+/tauri-app/src-tauri/target
+/tauri-app/src-tauri/Cargo.lock
+/Cargo.lock
