@@ -1,13 +1,15 @@
 mod init;
 use crate::init::init;
-use crate::init::first_login;
+use crate::util::register::register_user;
 
 mod util {
     pub mod timer;
     pub mod user;
+    pub mod register;
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let (conn, config) = match init() {
         Ok((conn, config)) => (conn, config),
         Err(e) => {
@@ -19,7 +21,7 @@ fn main() {
     println!("Config: {:?}", config);
 
     if config.first_run {
-        first_login(&conn);
+        register_user(&conn).await.expect("TODO: panic message");
     }
 
     drop(conn);

@@ -1,13 +1,13 @@
 use std::error::Error;
 use std::fs::{create_dir, File};
-use std::io::{Read, stdin, stdout, Write};
+use std::io::{Read};
 use std::path::{Path, PathBuf};
 
 use crate::util::timer::Timer;
-use crate::util::user::User;
+
 
 use serde::{Deserialize, Serialize};
-use rusqlite::{Connection, params, Result};
+use rusqlite::{Connection, Result};
 use std::fmt;
 
 
@@ -59,31 +59,6 @@ pub(crate) fn init() -> Result<(Connection, Config), Box<dyn Error>> {
     total_load_time.pointer("Total load time");
 
     Ok((conn, config))
-}
-
-pub fn first_login(conn: &Connection) {
-    println!("First login");
-
-    print!("Please enter your display name: ");
-    stdout().flush().unwrap();
-    let mut display_name = String::new();
-    stdin().read_line(&mut display_name).unwrap();
-    display_name = display_name.trim().to_string();
-
-    print!("{}", display_name);
-
-    let user = User {
-        login: display_name,
-        name: "Alice".to_string(),
-        public_key: "public_key".to_string(),
-        ip_address: "127.0.0.1".to_string(),
-        port: 1096,
-    };
-
-    conn.execute(
-        "INSERT INTO users (login, name, public_key, ip_address, port) VALUES (?1, ?2, ?3, ?4, ?5)",
-        params![&user.login, &user.name, &user.public_key, &user.ip_address, &user.port],
-    ).unwrap();
 }
 
 fn load_db(db_path: &String) -> Result<Connection, Box<dyn Error>> {
