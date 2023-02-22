@@ -1,10 +1,13 @@
 use std::error::Error;
 use std::fs::{create_dir, File};
-use std::io::Read;
+use std::io::{Read, stdin, stdout, Write};
 use std::path::{Path, PathBuf};
+
 use crate::util::timer::Timer;
+use crate::util::user::User;
+
 use serde::{Deserialize, Serialize};
-use sqlite::Connection;
+use rusqlite::{Connection, params, Result};
 use std::fmt;
 
 
@@ -12,7 +15,7 @@ use std::fmt;
 pub(crate) struct Config {
     version: String,
     debug: bool,
-    first_run: bool,
+    pub(crate) first_run: bool,
     db_file: String,
 }
 
@@ -58,7 +61,31 @@ pub(crate) fn init() -> Result<(Connection, Config), Box<dyn Error>> {
     Ok((conn, config))
 }
 
+pub fn first_login(conn: &Connection) {
+    println!("First login");
 
+    print!("Please enter your display name: ");
+    stdout().flush().unwrap();
+    let mut display_name = String::new();
+    stdin().read_line(&mut display_name).unwrap();
+    display_name = display_name.trim().to_string();
+
+    print!("{}", display_name);
+
+    let user = User {
+        login: display_name,
+        name: "Alice".to_string(),
+        public_key: "public_key".to_string(),
+        ip_address: "127.0.0.1".to_string(),
+        port: 1096,
+    };
+
+
+    conn.execute(
+        "INSERT INTO users (login, name, public_key, ip_address, port) VALUES (?1, ?2, ?3, ?4, ?5)",
+        params![&user.login, &user.name, &user.public_key, &user.ip_address, &user.port],
+    ).unwrap();
+}
 
 fn load_db(db_path: &String) -> Result<Connection, Box<dyn Error>> {
     let data_dir = "data";
@@ -69,18 +96,18 @@ fn load_db(db_path: &String) -> Result<Connection, Box<dyn Error>> {
         println!("Created data directory");
     }
     // Use the `db_path` variable to open or create the database file
-    let conn = Connection::open(&db_path)?;
+    let conn: Connection = Connection::open(&db_path)?;
 
     // Create the `users` table if it doesn't exist
     conn.execute("
         CREATE TABLE IF NOT EXISTS users (
-            login INTEGER PRIMARY KEY,
+            login TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             public_key TEXT NOT NULL UNIQUE,
             ip_address TEXT NOT NULL,
             port INTEGER NOT NULL
         );
-    ")?;
+    ", ())?;
 
     Ok(conn)
 }
@@ -101,7 +128,7 @@ fn load_config() -> Result<Config, Box<dyn Error>> {
 
     let output_config = config.clone();
 
-    config.first_run = false;
+    config.first_run = true;
     let yaml = serde_yaml::to_string(&config)?;
     std::fs::write(&config_path, yaml)?;
 

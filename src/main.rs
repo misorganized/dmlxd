@@ -1,8 +1,10 @@
 mod init;
 use crate::init::init;
+use crate::init::first_login;
 
 mod util {
     pub mod timer;
+    pub mod user;
 }
 
 fn main() {
@@ -15,6 +17,10 @@ fn main() {
     };
 
     println!("Config: {:?}", config);
+
+    if config.first_run {
+        first_login(&conn);
+    }
 
     drop(conn);
 }
