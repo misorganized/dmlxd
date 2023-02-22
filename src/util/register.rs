@@ -6,13 +6,7 @@ use rusqlite::{params, Connection};
 use sodiumoxide::hex;
 use crate::util::user::User;
 
-pub async fn register_user(conn: &Connection) -> Result<(), Box<dyn Error>> {
-    // Prompt the user for input
-    println!("Please enter your permanent login:");
-    let permanent_login = read_input()?;
-
-    println!("Please enter your display name:");
-    let display_name = read_input()?;
+pub async fn register_user(conn: &Connection, permanent_login: String, display_name: String) -> Result<(), Box<dyn Error>> {
 
     let mut ip_address = "0.0.0.0".to_string(); // Set a default value for `ip_address`
 
@@ -21,8 +15,25 @@ pub async fn register_user(conn: &Connection) -> Result<(), Box<dyn Error>> {
         ip_address = ip.to_string(); // Assign the IP address to the variable
     }
 
-    println!("Please enter your port number:");
-    let port = read_input()?;
+
+    println!("Please enter your port number (default is 1096):");
+    let mut port_str = read_input();
+    let mut port: u16 = 1096;
+
+    if !port_str.is_empty() {
+        loop {
+            match port_str.parse::<u16>() {
+                Ok(p) => {
+                    port = p;
+                    break;
+                },
+                Err(_) => {
+                    println!("Invalid port number, please enter a valid port:");
+                    port_str = read_input();
+                }
+            }
+        }
+    }
 
     // Generate a new public/private key pair for the user
     let (public_key, _private_key) = generate_keypair();
@@ -93,11 +104,11 @@ fn hash_password(password: &str) -> Result<String, Box<dyn Error>> {
 }
  */
 
-pub fn read_input() -> Result<String, Box<dyn Error>> {
+pub fn read_input() -> String {
     let mut input = String::new();
-    io::stdin().read_line(&mut input)?;
+    io::stdin().read_line(&mut input).expect("TODO: panic message");
     // Trim the input to remove the newline character
-    Ok(input.trim().to_string())
+    return input.trim().to_string();
 }
 
 
