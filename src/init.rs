@@ -5,7 +5,6 @@ use std::path::{Path, PathBuf};
 
 use crate::util::timer::Timer;
 
-
 use serde::{Deserialize, Serialize};
 use rusqlite::{Connection, Result};
 use std::fmt;
@@ -47,7 +46,7 @@ pub(crate) fn init() -> Result<(Connection, Config), Box<dyn Error>> {
 
     let mut timer = Timer::new();
 
-    let conn = match load_db(&config.db_file) {
+    let conn = match load_db(&config) {
         Ok(conn) => conn,
         Err(e) => {
             eprintln!("Error loading database: {}", e);
@@ -61,16 +60,20 @@ pub(crate) fn init() -> Result<(Connection, Config), Box<dyn Error>> {
     Ok((conn, config))
 }
 
-fn load_db(db_path: &String) -> Result<Connection, Box<dyn Error>> {
+fn load_db(config: &Config) -> Result<Connection, Box<dyn Error>> {
     let data_dir = "data";
 
     // Create the `data` folder if it doesn't exist
     if !PathBuf::from(data_dir).exists() {
         create_dir(data_dir)?;
         println!("Created data directory");
+        if !(config.first_run) {
+            warn!("The data directory was not found.
+             This is normal if this is the first time you are running the program.");
+        }
     }
     // Use the `db_path` variable to open or create the database file
-    let conn: Connection = Connection::open(&db_path)?;
+    let conn: Connection = Connection::open(&config.db_file)?;
 
     // Create the `users` table if it doesn't exist
     conn.execute("
@@ -119,3 +122,37 @@ fn load_config() -> Result<Config, Box<dyn Error>> {
     Ok(output_config)
 }
 
+/* Unit tests */
+/* TODO: Fix these tests
+#[cfg(test)]
+mod tests {
+    use std::fs::remove_file;
+    use rusqlite::Connection;
+    use crate::util::register::register_user;
+
+    #[test]
+    fn test_register_user() {
+        let conn = Connection::open_in_memory().unwrap();
+
+        conn.execute("
+        CREATE TABLE IF NOT EXISTS users (
+            login TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            public_key TEXT NOT NULL UNIQUE,
+            ip_address TEXT NOT NULL,
+            port INTEGER NOT NULL
+        );
+    ", ())?;
+
+        register_user(&conn);
+
+        assert!()
+
+        let user = get_user_by_permanent_login(&conn, "testuser").unwrap();
+        assert_eq!(user.name, "Test User");
+        assert_eq!(user.ip_address, "127.0.0.1");
+        assert_eq!(user.port, 1234);
+        remove_file("test.db").unwrap();
+    }
+}
+*/

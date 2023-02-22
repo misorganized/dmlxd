@@ -15,3 +15,5 @@ bcrypt = "0.14.0"
 sodiumoxide = "0.2.6"
 public-ip = "0.2.2"
 tokio = { version = "1.0", features = ["full"] }
+log = "0.4.11"
+env_logger = "0.10.0"

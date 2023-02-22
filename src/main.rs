@@ -9,6 +9,8 @@ mod util {
     pub mod register;
 }
 
+#[macro_use]
+extern crate log;
 #[tokio::main]
 async fn main() {
     let (conn, config) = match init() {
@@ -38,8 +40,6 @@ async fn main() {
         };
         let result_vec: Vec<&str> = command_str.split_whitespace().collect();
 
-
-
         let command = result_vec.get(0).unwrap_or(&"");
         let arguments = match result_vec.get(1..) {
             Some(args) => args,
@@ -50,12 +50,17 @@ async fn main() {
             &"exit" => break,
             &"list_contacts" => list_contacts(&conn).expect("TODO: panic message"),
             &"add_contact" =>
-                if arguments[0] == "help" {
+                if arguments.len() == 0 {
+                    println!("\nThe correct usage is: add_contact <login> <ip_address>");
+                } else if arguments[0] == "help" {
                     println!("\nThe correct usage is: add_contact <login> <ip_address>");
                 } else if arguments.len() != 2 {
                     println!("\nThe correct usage is: add_contact <login> <ip_address>");
                 } else {
-                    register_contact(&conn, arguments[0], arguments[1]).expect("TODO: panic message");
+                    register_contact(&conn,
+                                     arguments[0],
+                                     arguments[1]).expect("TODO: panic message");
+                    println!("Contact added successfully!");
                 },
 
             _ => println!("Unknown command: {}", command),

@@ -74,7 +74,7 @@ pub fn list_contacts (conn: &Connection) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn generate_keypair() -> (String, String) {
+pub(crate) fn generate_keypair() -> (String, String) {
     // Generate a new keypair using sodium oxide
     let (public_key, private_key) = gen_keypair();
 
@@ -98,4 +98,19 @@ pub fn read_input() -> Result<String, Box<dyn Error>> {
     io::stdin().read_line(&mut input)?;
     // Trim the input to remove the newline character
     Ok(input.trim().to_string())
+}
+
+
+/* Unit tests */
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_generate_keypair() {
+        let (public_key, private_key) = generate_keypair();
+        assert_eq!(public_key.len(), 64);
+        assert_eq!(private_key.len(), 64);
+    }
 }
