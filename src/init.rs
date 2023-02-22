@@ -8,7 +8,7 @@ use sqlite::Connection;
 use std::fmt;
 
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub(crate) struct Config {
     version: String,
     debug: bool,
@@ -99,10 +99,12 @@ fn load_config() -> Result<Config, Box<dyn Error>> {
     // Deserialize the YAML into a Config struct
     let mut config: Config= serde_yaml::from_str(&contents)?;
 
+    let output_config = config.clone();
+
     config.first_run = false;
     let yaml = serde_yaml::to_string(&config)?;
     std::fs::write(&config_path, yaml)?;
 
-    Ok(config)
+    Ok(output_config)
 }
 
