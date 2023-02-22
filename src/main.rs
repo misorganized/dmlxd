@@ -44,6 +44,8 @@ async fn main() {
         ip_address = ip.to_string(); // Assign the IP address to the variable
     }
 
+
+    /* TODO: Fix problem with empty db if exit on register_user */
     let current_user: User = conn.query_row("SELECT * FROM users", [], |row| {
         Ok(User {
             login: row.get(0)?,
@@ -52,6 +54,7 @@ async fn main() {
             ip_address: row.get(3)?,
             port: row.get(4)?,
         })
+
     }).expect("TODO: panic message");
 
     update_user(&conn, &current_user, ip_address).expect("TODO: panic message");
@@ -89,3 +92,4 @@ async fn main() {
 
     drop(conn);
 }
+
