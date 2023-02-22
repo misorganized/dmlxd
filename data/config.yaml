@@ -1,9 +1,4 @@
-# Important Version Stuff
 version: 0.0.1
-
-# Debugging
 debug: true
 first_run: true
-
-# File Locations
 db_file: ./data/main.db

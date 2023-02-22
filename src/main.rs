@@ -1,9 +1,11 @@
 mod init;
+use crate::init::init;
 
 mod util {
     pub mod timer;
 }
 
 fn main() {
-    init::init();
+    let (conn, config) = init().expect("Error loading...");
+    println!("Config: {:?}", config);
 }

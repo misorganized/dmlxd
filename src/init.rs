@@ -1,14 +1,14 @@
 use std::error::Error;
 use std::fs::{create_dir, File};
 use std::io::Read;
-use std::path::{PathBuf};
+use std::path::{Path, PathBuf};
 use crate::util::timer::Timer;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use sqlite::Connection;
 use std::fmt;
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub(crate) struct Config {
     version: String,
     debug: bool,
@@ -32,7 +32,19 @@ pub(crate) fn init() -> Result<(Connection, Config), Box<dyn Error>> {
 
     let mut timer = Timer::new();
 
-    let conn = match load_db() {
+    let config = match load_config() {
+        Ok(config) => config,
+        Err(e) => {
+            eprintln!("Error loading config: {}", e);
+            return Err(Box::new(MError("An error occurred".to_string())));
+        }
+    };
+
+    timer.pointer("Loading config");
+
+    let mut timer = Timer::new();
+
+    let conn = match load_db(&config.db_file) {
         Ok(conn) => conn,
         Err(e) => {
             eprintln!("Error loading database: {}", e);
@@ -41,19 +53,6 @@ pub(crate) fn init() -> Result<(Connection, Config), Box<dyn Error>> {
     };
 
     timer.pointer("Loading database");
-
-    let mut timer = Timer::new();
-
-    let config = match load_config() {
-        Ok(config) => config,
-        Err(e) => {
-            eprintln!("Error loading config: {}", e);
-            return Err(Box::new(MError("An error occurred".to_string())));
-        }
-    };
-    println!("Config: {:?}", config);
-
-    timer.pointer("Loading config");
     total_load_time.pointer("Total load time");
 
     Ok((conn, config))
@@ -61,22 +60,14 @@ pub(crate) fn init() -> Result<(Connection, Config), Box<dyn Error>> {
 
 
 
-fn load_db() -> Result<Connection, Box<dyn Error>> {
+fn load_db(db_path: &String) -> Result<Connection, Box<dyn Error>> {
     let data_dir = "data";
-    let db_file = "main.db";
-    let db_path = PathBuf::from(data_dir).join(db_file);
-
-    let mut timer = Timer::new();
 
     // Create the `data` folder if it doesn't exist
     if !PathBuf::from(data_dir).exists() {
         create_dir(data_dir)?;
         println!("Created data directory");
     }
-
-    timer.pointer("Creating data directory");
-
-    let mut timer = Timer::new();
     // Use the `db_path` variable to open or create the database file
     let conn = Connection::open(&db_path)?;
 
@@ -90,23 +81,26 @@ fn load_db() -> Result<Connection, Box<dyn Error>> {
             port INTEGER NOT NULL
         );
     ")?;
-
-    timer.pointer("Accessing database");
-
     Ok(conn)
 }
 
 
 fn load_config() -> Result<Config, Box<dyn Error>> {
+    let config_path = Path::new("data/config.yaml");
+
     // Open the config file
-    let mut file = File::open("data/config.yaml")?;
+    let mut file = File::open(&config_path)?;
 
     // Read the contents of the file
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
     // Deserialize the YAML into a Config struct
-    let config = serde_yaml::from_str(&contents)?;
+    let mut config: Config= serde_yaml::from_str(&contents)?;
+
+    config.first_run = false;
+    let yaml = serde_yaml::to_string(&config)?;
+    std::fs::write(&config_path, yaml)?;
 
     Ok(config)
 }
