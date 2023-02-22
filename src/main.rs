@@ -6,6 +6,15 @@ mod util {
 }
 
 fn main() {
-    let (conn, config) = init().expect("Error loading...");
+    let (conn, config) = match init() {
+        Ok((conn, config)) => (conn, config),
+        Err(e) => {
+            eprintln!("Error initializing: {}", e);
+            return;
+        }
+    };
+
     println!("Config: {:?}", config);
+
+    drop(conn);
 }

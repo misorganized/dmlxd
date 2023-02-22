@@ -81,6 +81,7 @@ fn load_db(db_path: &String) -> Result<Connection, Box<dyn Error>> {
             port INTEGER NOT NULL
         );
     ")?;
+
     Ok(conn)
 }
 
