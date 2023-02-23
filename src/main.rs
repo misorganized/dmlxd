@@ -4,11 +4,16 @@ use rusqlite::Connection;
 use crate::init::init;
 use crate::util::register::{list_contacts, read_input, register_contact, register_user};
 use crate::util::user::{update_user, User};
+use crate::comms::init_comm;
 
 mod util {
     pub mod timer;
     pub mod user;
     pub mod register;
+}
+
+mod comms {
+    pub mod init_comm;
 }
 
 #[macro_use]
@@ -52,6 +57,9 @@ async fn main() {
     };
 
     update_user(&conn, &current_user, ip_address).expect("TODO: panic message");
+
+    init_comm::init_connection(&current_user).expect("TODO: panic message");
+
 
     println!("\nWelcome to the chat client! Type 'exit' to exit.\n");
 

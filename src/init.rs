@@ -121,38 +121,3 @@ fn load_config() -> Result<Config, Box<dyn Error>> {
 
     Ok(output_config)
 }
-
-/* Unit tests */
-/* TODO: Fix these tests
-#[cfg(test)]
-mod tests {
-    use std::fs::remove_file;
-    use rusqlite::Connection;
-    use crate::util::register::register_user;
-
-    #[test]
-    fn test_register_user() {
-        let conn = Connection::open_in_memory().unwrap();
-
-        conn.execute("
-        CREATE TABLE IF NOT EXISTS users (
-            login TEXT NOT NULL UNIQUE,
-            name TEXT NOT NULL,
-            public_key TEXT NOT NULL UNIQUE,
-            ip_address TEXT NOT NULL,
-            port INTEGER NOT NULL
-        );
-    ", ())?;
-
-        register_user(&conn);
-
-        assert!()
-
-        let user = get_user_by_permanent_login(&conn, "testuser").unwrap();
-        assert_eq!(user.name, "Test User");
-        assert_eq!(user.ip_address, "127.0.0.1");
-        assert_eq!(user.port, 1234);
-        remove_file("test.db").unwrap();
-    }
-}
-*/
