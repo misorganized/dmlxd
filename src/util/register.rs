@@ -15,7 +15,6 @@ pub async fn register_user(conn: &Connection, permanent_login: String, display_n
         ip_address = ip.to_string(); // Assign the IP address to the variable
     }
 
-
     println!("Please enter your port number (default is 1096):");
     let mut port_str = read_input();
     let mut port: u16 = 1096;
@@ -51,6 +50,8 @@ pub fn register_contact(conn: &Connection, login: &str, ip_address: &str) -> Res
     let name = "Unknown"; // Set a default value for `name`
     let public_key = "Unknown"; // Set a default value for `public_key`
     let port = 1096; // Set a default value for `port`
+
+    /* TODO: Contact the user with the give credentials and get their information */
 
     let insert_sql = "INSERT INTO contacts (login, name, public_key, ip_address, port)\
      VALUES (?, ?, ?, ?, ?)";

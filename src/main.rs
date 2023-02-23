@@ -1,5 +1,6 @@
 mod init;
 
+use rusqlite::Connection;
 use crate::init::init;
 use crate::util::register::{list_contacts, read_input, register_contact, register_user};
 use crate::util::user::{update_user, User};
@@ -25,16 +26,7 @@ async fn main() {
     println!("Config: {:?}", config);
 
     if config.first_run {
-        // Prompt the user for input
-        println!("First run detected. Registering user...\n\n");
-
-        println!("Please enter your permanent login:");
-        let permanent_login = read_input();
-
-        println!("Please enter your display name:");
-        let display_name = read_input();
-
-        register_user(&conn, permanent_login, display_name).await.expect("TODO: panic message");
+        get_user_data(&conn).await;
     }
 
     let mut ip_address = "0.0.0.0".to_string(); // Set a default value for `ip_address`
@@ -44,18 +36,20 @@ async fn main() {
         ip_address = ip.to_string(); // Assign the IP address to the variable
     }
 
-
-    /* TODO: Fix problem with empty db if exit on register_user */
-    let current_user: User = conn.query_row("SELECT * FROM users", [], |row| {
-        Ok(User {
-            login: row.get(0)?,
-            name: row.get(1)?,
-            public_key: row.get(2)?,
-            ip_address: row.get(3)?,
-            port: row.get(4)?,
-        })
-
-    }).expect("TODO: panic message");
+    let current_user: User = loop {
+        match conn.query_row("SELECT * FROM users", [], |row| {
+            Ok(User {
+                login: row.get(0)?,
+                name: row.get(1)?,
+                public_key: row.get(2)?,
+                ip_address: row.get(3)?,
+                port: row.get(4)?,
+            })
+        }) {
+            Ok(user) => break user,
+            Err(_) => get_user_data(&conn).await,
+        }
+    };
 
     update_user(&conn, &current_user, ip_address).expect("TODO: panic message");
 
@@ -91,5 +85,18 @@ async fn main() {
     }
 
     drop(conn);
+}
+
+async fn get_user_data(conn: &Connection) {
+    // Prompt the user for input
+    println!("First run detected. Registering user...\n\n");
+
+    println!("Please enter your permanent login:");
+    let permanent_login = read_input();
+
+    println!("Please enter your display name:");
+    let display_name = read_input();
+
+    register_user(&conn, permanent_login, display_name).await.expect("TODO: panic message");
 }
 
