@@ -1,0 +1,105 @@
+[data-bs-theme="primary-dark"] {
+  --bs-body-color: #ebdbb2;
+  --bs-body-bg: #282828;
+  
+  --bs-link-color: #ebdbb2;
+  --bs-input-color: #282828;
+}
+[data-bs-theme="primary-dark"] .btn-primary {
+  --bs-btn-bg: #458588;
+  --bs-btn-border-color: #458588;
+  --bs-btn-hover-bg: #83a598;
+  --bs-btn-hover-border-color: #83a598;
+  --bs-btn-hover-color: #282828;
+  --bs-btn-color: #282828;
+}
+[data-bs-theme="primary-dark"] .btn-success {
+  --bs-btn-bg: #98971a;
+  --bs-btn-border-color: #98971a;
+  --bs-btn-hover-bg: #b7bb26;
+  --bs-btn-hover-border-color: #b7bb26;
+  --bs-btn-hover-color: #282828;
+  --bs-btn-color: #282828;
+}
+
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color: #0f0f0f;
+  background-color: #282828;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  margin: 0;
+  padding-top: 10vh;
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  height: 100vh;
+  width: 100vw;
+  /*justify-content: center*/
+  /*text-align: center;*/
+}
+
+
+h1 {
+  text-align: center;
+}
+
+.col {
+  max-width: 600px; /* set the max width of the container */
+  margin: 0 auto; /* center the container horizontally */
+}
+
+.icon {
+  max-width: 100%;
+  max-height: 512px;
+  transition: all 0.3s ease-in-out;
+}
+
+.icon:hover {
+  filter: drop-shadow(0 0 2em #ffe21c);
+  transition: all 0.3s ease-in-out;
+}
+
+.animate-charcter
+{
+  text-transform: uppercase;
+  background-image: linear-gradient(
+          -225deg,
+          #7234b4 0%,
+          #b36ef6 10%,
+          #c7bfff 20%,
+          #edf3ff 30%,
+          #c7bfff 40%,
+          #b36ef6 50%,
+          #7234b4 60%,
+          #8a7cff 70%,
+          #8a7cff 80%,
+          #8a7cff 90%,
+          #8a7cff 100%
+  );
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 3s linear infinite;
+  display: inline-block;
+  font-size: 70px;
+}
+
+@keyframes textclip {
+  to {
+      background-position: 200% center;
+  }
+}
