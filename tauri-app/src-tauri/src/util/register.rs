@@ -44,6 +44,23 @@ pub async fn register_user(conn: &Connection, permanent_login: String, display_n
     Ok(())
 }
 
+
+
+pub async fn register_user_helper(conn: &Connection, permanent_login: String, display_name: String, ip_addr: String, port_number: i64) -> Result<(), Box<dyn Error>> {
+
+
+        // Generate a new public/private key pair for the user
+        let (public_key, _private_key) = generate_keypair();
+
+        // Insert the user's information into the database
+        let insert_sql = "INSERT INTO users (login, name, public_key, ip_address, port) VALUES (?, ?, ?, ?, ?)";
+        conn.execute(insert_sql, params![permanent_login, display_name, public_key, ip_addr, port_number])?;
+
+        Ok(())
+}
+
+
+
 pub fn register_contact(conn: &Connection, login: &str, ip_address: &str) -> Result<(), Box<dyn Error>> {
     // Insert the contact's information into the database
 
