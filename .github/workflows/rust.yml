@@ -16,7 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Dependencies
+    - name: Proto Dependency
       run: sudo apt-get install protobuf-compiler
+    - name: Tauri Dependency
+      run: npm install -g @tauri-apps/cli
     - name: Build
       run: cargo tauri build --verbose
