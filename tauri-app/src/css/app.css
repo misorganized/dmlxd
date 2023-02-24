@@ -1,26 +1,27 @@
 [data-bs-theme="primary-dark"] {
-  --bs-body-color: #ebdbb2;
-  --bs-body-bg: #282828;
-  
-  --bs-link-color: #ebdbb2;
-  --bs-input-color: #282828;
-}
-[data-bs-theme="primary-dark"] .btn-primary {
-  --bs-btn-bg: #458588;
-  --bs-btn-border-color: #458588;
-  --bs-btn-hover-bg: #83a598;
-  --bs-btn-hover-border-color: #83a598;
   --bs-btn-hover-color: #282828;
-  --bs-btn-color: #282828;
-}
-[data-bs-theme="primary-dark"] .btn-success {
-  --bs-btn-bg: #98971a;
-  --bs-btn-border-color: #98971a;
-  --bs-btn-hover-bg: #b7bb26;
-  --bs-btn-hover-border-color: #b7bb26;
-  --bs-btn-hover-color: #282828;
-  --bs-btn-color: #282828;
-}
+    --bs-body-color: #b8d2da;
+    --bs-body-bg: #283135;
+    
+    --bs-link-color: #b8d2da;
+    --bs-input-color: #283135;
+  }
+  [data-bs-theme="primary-dark"] .btn-secondary {
+    --bs-btn-bg: #455258;
+    --bs-btn-border-color: #455258;
+    --bs-btn-hover-bg: #66777e;
+    --bs-btn-hover-border-color: #66777e;
+    --bs-btn-hover-color: #b8d2da;
+    --bs-btn-color: #b8d2da;
+  }
+  [data-bs-theme="primary-dark"] .btn-success {
+    --bs-btn-bg: #9cd1c7;
+    --bs-btn-border-color: #9cd1c7;
+    --bs-btn-hover-bg: #ade5d8;
+    --bs-btn-hover-border-color: #ade5d8;
+    --bs-btn-hover-color: #283135;
+    --bs-btn-color: #283135;
+  }
 
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -29,7 +30,7 @@
   font-weight: 400;
 
   color: #0f0f0f;
-  background-color: #282828;
+  background-color: #283135;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -48,10 +49,14 @@
     overflow: hidden;
     padding-left: 0.6rem;
     --bs-gutter-x: 0rem;
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 
 .row {
-    border: 1px solid #ebdbb2;
+    border: 1px solid #b8d2da;
 }
 
 #top-left-canvas {
