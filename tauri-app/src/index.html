@@ -5,7 +5,7 @@
 		<link rel="stylesheet" href="style.css" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Tauri App</title>
-		<script type="module" src="/main.js" defer></script>
+		<script type="module" src="register.js" defer></script>
 		<style>
             .col {
                 max-width: 600px; /* set the max width of the container */
@@ -68,10 +68,10 @@
 
         <div class="col align-self-center">
           <h1 class="animate-charcter">DMLXD</h1>
-            <img src="../assets/logo.png" class="icon" alt="logo" />
+            <img src="assets/logo.png" class="icon" alt="logo" />
         </div>
 
-        <div class="col">
+        <div class="col align-self-center">
           <form>
             <div class="mb-3">
               <label for="sign-up-username" class="form-label">Username:</label>
@@ -116,9 +116,7 @@
             <div class="mb-3 text-center">
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#advancedRegister">Advanced</button>
 
-                <a href="../index.html">
-                  <button type="submit" class="btn btn-success">Register</button>
-              </a>
+              <button type="submit" class="btn btn-success" id="register-button">Register</button>
 
             </div>
         </form>

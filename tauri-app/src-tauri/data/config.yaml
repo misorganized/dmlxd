@@ -1,0 +1,4 @@
+version: 0.0.1
+debug: true
+first_run: false
+db_file: ./data/main.db

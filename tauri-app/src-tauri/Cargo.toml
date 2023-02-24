@@ -28,6 +28,7 @@ env_logger = "0.10.0"
 # Communcation
 libp2p = "0.50.0"
 futures = "0.3.16"
+reqwest = "0.11.14"
 
 [features]
 # by default Tauri runs in production mode

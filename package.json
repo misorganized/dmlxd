@@ -1,0 +1,8 @@
+{
+  "name": "dmlxd",
+  "version": "1.0.0",
+  "dependencies": {
+    "@tauri-apps/api": "^1.2.0",
+    "node": "^19.7.0"
+  }
+}
