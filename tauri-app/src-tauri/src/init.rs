@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::fs::{create_dir, File};
-use std::io::{Read};
+use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
 use crate::util::timer::Timer;
@@ -79,6 +79,7 @@ fn load_db(config: &Config) -> Result<Connection, Box<dyn Error>> {
     conn.execute("
         CREATE TABLE IF NOT EXISTS users (
             login TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
             name TEXT NOT NULL,
             public_key TEXT NOT NULL UNIQUE,
             ip_address TEXT NOT NULL,
@@ -121,9 +122,21 @@ fn load_config() -> Result<Config, Box<dyn Error>> {
 
     let output_config = config.clone();
 
-    config.first_run = false;
-    let yaml = serde_yaml::to_string(&config)?;
-    std::fs::write(&config_path, yaml)?;
-
     Ok(output_config)
+}
+
+pub fn write_first_login() {
+    let mut config = load_config().unwrap();
+    config.first_run = false;
+    let config_path = Path::new("data/config.yaml");
+    let mut file = File::create(&config_path).unwrap();
+    let config_string = serde_yaml::to_string(&config).unwrap();
+    file.write_all(config_string.as_bytes()).unwrap();
+}
+
+#[tauri::command]
+pub fn is_first_login() -> bool {
+    let config = load_config().unwrap();
+    println!("First run: {}", config.first_run);
+    return config.first_run;
 }

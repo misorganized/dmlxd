@@ -8,11 +8,14 @@
   },
   "package": {
     "productName": "DMLXD",
-    "version": "0.0.0"
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
       "all": false,
+      "dialog": {
+        "message": true
+      },
       "shell": {
         "all": false,
         "open": true
@@ -20,7 +23,7 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
+      "category": "BoardGame",
       "copyright": "me",
       "deb": {
         "depends": []

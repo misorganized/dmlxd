@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::io;
+use bcrypt::{hash, verify};
 
 use sodiumoxide::crypto::box_::gen_keypair;
 use rusqlite::{params, Connection};
@@ -99,13 +100,20 @@ pub(crate) fn generate_keypair() -> (String, String) {
     (public_key_str, private_key_str)
 }
 
-/*
-fn hash_password(password: &str) -> Result<String, Box<dyn Error>> {
+pub fn check_password(password: &str, hashed_password: &str) -> bool {
+    // Verify that the entered password matches the stored hash
+    match verify(password, hashed_password) {
+        Ok(matching) => matching,
+        Err(_) => false
+    }
+}
+
+pub fn hash_password(password: String) -> Result<String, Box<dyn Error>> {
     // Hash the password using bcrypt
     let hashed_password = hash(password, 10)?;
     Ok(hashed_password)
 }
- */
+
 
 pub fn read_input() -> String {
     let mut input = String::new();
